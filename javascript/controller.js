@@ -26,28 +26,54 @@ GameController.prototype = {
         location.reload();
     },
 
-    makeMove: function(e){                              //player makes the move
+    //player makes the move. wherever the player clicks,
+    //we check all the possible rows/columns/diagonals that
+    //could lead to a three-in-a-row
+
+    makeMove: function(e){                             
+        var possibleAreas = [];
         if(this.p1.myTurn){
             var id = e.target.className.substr(-1);
             console.log("PLAYER MOVE: " +id);
             this.gameView.showPlayerPiece(id);
             this.board.tracker[id] = "x";
+
+
             this.p1.myTurn = false;
             this.totalMoves ++;
+
             //check if player won
             this.anyWinner();
+
+            for(var i=0;i<this.board.r1.length;i++){
+                if(this.board.r1[i] == id) possibleAreas.push(this.board.r1);
+                if(this.board.r2[i] == id) possibleAreas.push(this.board.r2);
+                if(this.board.r3[i] == id) possibleAreas.push(this.board.r3);
+                if(this.board.c1[i] == id) possibleAreas.push(this.board.c1);
+                if(this.board.c2[i] == id) possibleAreas.push(this.board.c2);
+                if(this.board.c3[i] == id) possibleAreas.push(this.board.c3);
+                if(this.board.d1[i] == id) possibleAreas.push(this.board.d1);
+                if(this.board.d2[i] == id) possibleAreas.push(this.board.d2);
+                
+            }
+
             if(this.totalMoves < 9){
-                this.computerTurn();
+
+                this.computerTurn(possibleAreas);
             }
         }
     },
 
-    computerTurn: function(){                           //computer makes a move
+    //now it's the computer's turn. we first take into consideration
+    //the player's first move in order to make the smartest move for the computer.
+    //computer also checks if the player is about to get a three-in-a-row
+    computerTurn: function(winningAreas){                           
         while(this.p1.myTurn == false){
+
             var position;
             //p1 first move = center
             if(this.totalMoves == 1 && this.board.tracker[4] == "x"){
-                //computer must go for a corner 
+                //computer must go for a corner
                 var choices = [0,2,6,8];
                 var randChoice = choices[Math.floor(Math.random() * choices.length)];
                 this.board.tracker[randChoice] = "o";
@@ -63,8 +89,82 @@ GameController.prototype = {
                 this.p1.myTurn = true;
                 this.totalMoves ++;
             }
+
+            //check if there needs to be a counter move to prevent
+            //player from getting three-in-a-row
+            
+            else if(this.totalMoves > 2){
+
+                var chosenPosition;
+                for(var i=0;i<winningAreas.length;i++){
+                    var countX = 0;
+                    var countO = 0;
+
+                    for(var j=0;j<winningAreas[i].length;j++){
+                        if(this.board.tracker[winningAreas[i][j]] == "x"){
+                            countX++;
+                        }
+                        else if(this.board.tracker[winningAreas[i][j]] == "o"){
+                            countO++;
+                        }
+                        //the cell is empty
+                        else{
+                            chosenPosition = winningAreas[i][j];
+                        }
+                    }
+                    if((countX == 2) && (countO == 0)){
+                        position = chosenPosition;
+                        this.board.tracker[position] = "o";
+                        this.p1.myTurn = true;
+                        break
+                    }
+                }
+                if(this.p1.myTurn == false){
+                    var remainingSpots = [];
+                    var smartEmptySpots = [];
+                    var randChoice;
+                    for(var i=0;i<this.board.tracker.length;i++){
+                        if(this.board.tracker[i] == ""){
+                            remainingSpots.push(i);
+                        }
+                    }
+                    //certain precautions need to be taken in this step
+                    if(this.totalMoves == 4){
+                        if(this.board.tracker[4] == "x"){
+                            for(var i=0;i<remainingSpots.length;i++){
+                                if(remainingSpots[i]==0 || remainingSpots[i]==2 || remainingSpots[i]==6 || remainingSpots[i]==8){
+                                    if(this.board.tracker[remainingSpots[i]]== ""){
+                                        smartEmptySpots.push(remainingSpots[i]);
+                                    }
+                                }
+                            }
+                        }
+                        else if(this.board.tracker[0] == "x" || this.board.tracker[2] == "x" || this.board.tracker[6] == "x" || this.board.tracker[8] == "x"){
+                            for(var i=0;i<remainingSpots.length;i++){
+                                if(remainingSpots[i]==1 || remainingSpots[i]==3 || remainingSpots[i]==5 || remainingSpots[i]==7){
+                                    if(this.board.tracker[remainingSpots[i]]== ""){
+                                        smartEmptySpots.push(remainingSpots[i]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(smartEmptySpots.length == 0){
+                        randChoice = remainingSpots[Math.floor(Math.random() * remainingSpots.length)];
+                    }
+                    else{
+                        randChoice = smartEmptySpots[Math.floor(Math.random() * smartEmptySpots.length)];
+                    }
+                    
+                    chosenPosition = randChoice;
+                    position = chosenPosition;
+                    this.board.tracker[position] = "o";
+                    this.p1.myTurn = true;
+                }
+            }
         }
         if(this.p1.myTurn && this.board.tracker[position] == "o"){
+            this.totalMoves ++;
             this.gameView.showComputerPiece(position);
             //check if computer won
             this.anyWinner();
@@ -72,6 +172,7 @@ GameController.prototype = {
     },
 
     anyWinner: function(){
+
         var position0 = this.board.tracker[0];
         var position1 = this.board.tracker[1];
         var position2 = this.board.tracker[2];

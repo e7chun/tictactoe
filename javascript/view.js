@@ -5,7 +5,7 @@ View.prototype = {
     showBoard: function(board){             //adding the actual board to the page                  
         for(var i=0;i<9;i++){
             $('.board').append("<div></div>");
-            $('.board > div').last().addClass("cell " + board.cellCollection[i].positionID);    //each cell is given the class name 'cell' as well as the position ID
+            $('.board > div').last().addClass("cell " + i);    //each cell is given the class name 'cell' as well as the position ID
         }
     },
 
