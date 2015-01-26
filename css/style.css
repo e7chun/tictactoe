@@ -1,6 +1,11 @@
+body{
+    background-color: #ffffff;
+    font-family: 'Raleway', sans-serif;
+}
 .container {
     width: 400px;
     margin: 0 auto;
+    color: #7e7e7e;
 }
 
 .board {
@@ -17,12 +22,17 @@
     text-align: center;
 }
 
+.container > h2 {
+    margin-top: 20px;
+    text-align: center;
+}
+
 .cell:nth-child(-n+3){
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #bebebe;
 }
 
 .cell:nth-child(-n+6){
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #bebebe;
 }
 
 .cell:nth-child(1),
@@ -31,26 +41,21 @@
 .cell:nth-child(5),
 .cell:nth-child(7),
 .cell:nth-child(8){
-    border-right: 1px solid black;
+    border-right: 1px solid #bebebe;
 }
 
 .start-game, .reset-game {
-    margin: 20px 60px;
+    margin: 20px 20px;
     padding: 10px 15px;
-    background: #4479BA;
+    background: #bfbdc1;
     color: #FFF;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    border: solid 1px #20538D;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    border: none;    
 }
 
-.start-game:hover{
-    background: #356094;
-    border: solid 1px #2A4E77;
+.start-game:hover, .reset-game:hover{
+    background: #979699;
     text-decoration: none;
 }
