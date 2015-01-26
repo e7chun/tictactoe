@@ -58,6 +58,10 @@ GameController.prototype = {
             if(this.totalMoves < 9){
                 this.computerTurn(possibleAreas);
             }
+            else{
+                this.tieGame();
+                this.resetGame();
+            }
         }
     },
 
@@ -412,6 +416,10 @@ GameController.prototype = {
             alert("Computer wins");
             this.resetGame();
         }
+    },
+
+    tieGame: function(){
+        alert("Tie game!");
     }
 }
 
