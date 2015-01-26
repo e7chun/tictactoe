@@ -7,7 +7,7 @@ function Board(){
     this.c2 = [1,4,7];
     this.c3 = [2,5,8];
     this.d1 = [0,4,8];
-    this.d2 = [2,4,6]
+    this.d2 = [2,4,6];
 }
 
 Board.prototype = {
