@@ -34,10 +34,8 @@ GameController.prototype = {
         var possibleAreas = [];
         if(this.p1.myTurn){
             var id = e.target.className.substr(-1);
-            console.log("PLAYER MOVE: " +id);
             this.gameView.showPlayerPiece(id);
             this.board.tracker[id] = "x";
-
 
             this.p1.myTurn = false;
             this.totalMoves ++;
@@ -228,39 +226,54 @@ GameController.prototype = {
                 d2Win.push(this.board.d2[i]);
             }
         }
-        // debugger
 
         if(r1Win.length == 2){
             diff = this.board.r1.filter(function(x) { return r1Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(r2Win.length == 2){
             diff = this.board.r2.filter(function(x) { return r2Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(r3Win.length == 2){
             diff = this.board.r3.filter(function(x) { return r3Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(c1Win.length == 2){
             diff = this.board.c1.filter(function(x) { return c1Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(c2Win.length == 2){
             diff = this.board.c2.filter(function(x) { return c2Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(c3Win.length == 2){
             diff = this.board.c3.filter(function(x) { return c3Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(d1Win.length == 2){
             diff = this.board.d1.filter(function(x) { return d1Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
         else if(d2Win.length == 2){
             diff = this.board.d2.filter(function(x) { return d2Win.indexOf(x) < 0 })
-            return diff;
+            if(this.board.tracker[diff[0]] == ""){
+                return diff;                
+            }
         }
     },
 
