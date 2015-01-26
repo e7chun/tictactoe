@@ -69,6 +69,7 @@ GameController.prototype = {
 
             var position;
             var possibleWin = this.winningMove();
+
             //p1 first move = center
             if(this.totalMoves == 1 && this.board.tracker[4] == "x"){
                 //computer must go for a corner
@@ -89,6 +90,7 @@ GameController.prototype = {
             }
             //checks if computer can win next turn
             else if(possibleWin){
+
                 position = possibleWin[0];
                 this.board.tracker[position] = "o";
                 this.p1.myTurn = true;
@@ -145,8 +147,51 @@ GameController.prototype = {
                                 }
                             }
                         }
+                        //if the player's first move was the edge
+                        else if(this.board.tracker[1] == "x" || this.board.tracker[3] == "x" || this.board.tracker[5] == "x" || this.board.tracker[7] == "x"){
+                            for(var i=0;i<remainingSpots.length;i++){
+                                if(remainingSpots[i]==0 || remainingSpots[i]==2 || remainingSpots[i]==6 || remainingSpots[i]==8){
+                                    if(this.board.tracker[remainingSpots[i]]== ""){
+                                        smartEmptySpots.push(remainingSpots[i]);
+                                    }
+                                }
+                            }
+                            if(this.board.tracker[1] == "x"){
+                                if(this.board.tracker[3] == "x" || this.board.tracker[8] == "x"){
+                                    smartEmptySpots = [0];
+                                }
+                                else if(this.board.tracker[5] == "x" || this.board.tracker[6] == "x"){
+                                    smartEmptySpots = [2];
+                                }
+                            }
+                            else if(this.board.tracker[3] == "x"){
+                                if(this.board.tracker[7] == "x" || this.board.tracker[2] == "x"){
+                                    smartEmptySpots = [6];
+                                }
+                                else if(this.board.tracker[8] == "x"){
+                                    smartEmptySpots = [0];
+                                }
+                            }
+                            else if(this.board.tracker[5] == "x"){
+                                if(this.board.tracker[7] == "x" || this.board.tracker[0] == "x"){
+                                    smartEmptySpots = [8];
+                                }
+                                else if(this.board.tracker[6] == "x"){
+                                    smartEmptySpots = [2];
+                                }
+                            }
+                            else if(this.board.tracker[7] == "x"){
+                                if(this.board.tracker[0] == "x"){
+                                    smartEmptySpots = [8];
+                                }
+                                else if(this.board.tracker[2] == "x"){
+                                    smartEmptySpots = [6];
+                                }
+                            }
+                        }
                         //if the player's first move was the corner
                         else if(this.board.tracker[0] == "x" || this.board.tracker[2] == "x" || this.board.tracker[6] == "x" || this.board.tracker[8] == "x"){
+
                             for(var i=0;i<remainingSpots.length;i++){
                                 if(remainingSpots[i]==1 || remainingSpots[i]==3 || remainingSpots[i]==5 || remainingSpots[i]==7){
                                     if(this.board.tracker[remainingSpots[i]]== ""){
@@ -155,16 +200,6 @@ GameController.prototype = {
                                 }
                             }
                         }
-                        //if the player's first move was the edge
-                        else if(this.board.tracker[1] == "x" || this.board.tracker[3] == "x" || this.board.tracker[5] == "x" || this.board.tracker[7] == "x"){
-                            for(var i=0;i<remainingSpots.length;i++){
-                                if(remainingSpots[i]==1 || remainingSpots[i]==3 || remainingSpots[i]==5 || remainingSpots[i]==7){
-                                    if(this.board.tracker[remainingSpots[i]]== ""){
-                                        smartEmptySpots.push(remainingSpots[i]);
-                                    }
-                                }
-                            }                            
-                        }
                     }
                     if(smartEmptySpots.length == 0){
                         randChoice = remainingSpots[Math.floor(Math.random() * remainingSpots.length)];
@@ -172,7 +207,6 @@ GameController.prototype = {
                     else{
                         randChoice = smartEmptySpots[Math.floor(Math.random() * smartEmptySpots.length)];
                     }
-                    
                     chosenPosition = randChoice;
                     position = chosenPosition;
                     this.board.tracker[position] = "o";
@@ -200,7 +234,6 @@ GameController.prototype = {
         var diff = [];
 
         for(var i=0;i<3;i++){
-                
             if(this.board.tracker[this.board.r1[i]] == "o"){
                 r1Win.push(this.board.r1[i]);
             }
@@ -226,50 +259,49 @@ GameController.prototype = {
                 d2Win.push(this.board.d2[i]);
             }
         }
-
         if(r1Win.length == 2){
             diff = this.board.r1.filter(function(x) { return r1Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(r2Win.length == 2){
+        if(r2Win.length == 2){
             diff = this.board.r2.filter(function(x) { return r2Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(r3Win.length == 2){
+        if(r3Win.length == 2){
             diff = this.board.r3.filter(function(x) { return r3Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(c1Win.length == 2){
+        if(c1Win.length == 2){
             diff = this.board.c1.filter(function(x) { return c1Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(c2Win.length == 2){
+        if(c2Win.length == 2){
             diff = this.board.c2.filter(function(x) { return c2Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(c3Win.length == 2){
+        if(c3Win.length == 2){
             diff = this.board.c3.filter(function(x) { return c3Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(d1Win.length == 2){
+        if(d1Win.length == 2){
             diff = this.board.d1.filter(function(x) { return d1Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
             }
         }
-        else if(d2Win.length == 2){
+        if(d2Win.length == 2){
             diff = this.board.d2.filter(function(x) { return d2Win.indexOf(x) < 0 })
             if(this.board.tracker[diff[0]] == ""){
                 return diff;                
