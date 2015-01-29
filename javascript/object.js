@@ -8,6 +8,7 @@ function Board(){
     this.c3 = [2,5,8];
     this.d1 = [0,4,8];
     this.d2 = [2,4,6];
+    this.fullBoard = [this.r1,this.r2,this.r3,this.c1,this.c2,this.c3,this.d1,this.d2];
 }
 
 Board.prototype = {

@@ -43,15 +43,10 @@ GameController.prototype = {
             //check if player won
             this.anyWinner();
 
-            for(var i=0;i<this.board.r1.length;i++){
-                if(this.board.r1[i] == id) possibleAreas.push(this.board.r1);
-                if(this.board.r2[i] == id) possibleAreas.push(this.board.r2);
-                if(this.board.r3[i] == id) possibleAreas.push(this.board.r3);
-                if(this.board.c1[i] == id) possibleAreas.push(this.board.c1);
-                if(this.board.c2[i] == id) possibleAreas.push(this.board.c2);
-                if(this.board.c3[i] == id) possibleAreas.push(this.board.c3);
-                if(this.board.d1[i] == id) possibleAreas.push(this.board.d1);
-                if(this.board.d2[i] == id) possibleAreas.push(this.board.d2);
+            for(var i=0;i<this.board.fullBoard.length;i++){
+                for(var j=0;j<3;j++){
+                    if(this.board.fullBoard[i][j] == id) possibleAreas.push(this.board.fullBoard[i]);
+                }
             }
             if(this.totalMoves < 9) this.computerTurn(possibleAreas);
             else{
@@ -194,25 +189,18 @@ GameController.prototype = {
     },
 
     winningMove: function(){
-        var r1Win = [], r2Win = [], r3Win = [], c1Win = [], c2Win = [], c3Win = [], d1Win = [], d2Win = [], diff = [], boardWin = [];
-        for(var i=0;i<3;i++){
-            if(this.board.tracker[this.board.r1[i]] == "o") r1Win.push(this.board.r1[i]);
-            if(this.board.tracker[this.board.r2[i]] == "o") r2Win.push(this.board.r2[i]);
-            if(this.board.tracker[this.board.r3[i]] == "o") r3Win.push(this.board.r3[i]);
-            if(this.board.tracker[this.board.c1[i]] == "o") c1Win.push(this.board.c1[i]);
-            if(this.board.tracker[this.board.c2[i]] == "o") c2Win.push(this.board.c2[i]);
-            if(this.board.tracker[this.board.c3[i]] == "o") c3Win.push(this.board.c3[i]);
-            if(this.board.tracker[this.board.d1[i]] == "o") d1Win.push(this.board.d1[i]);
-            if(this.board.tracker[this.board.d2[i]] == "o") d2Win.push(this.board.d2[i]);
-        }
-        boardWin.push(this.board.r1,this.board.r2,this.board.r3,
-                    this.board.c1,this.board.c2,this.board.c3,
-                    this.board.d1,this.board.d2,
-                    r1Win,r2Win,r3Win,c1Win,c2Win,c3Win,d1Win,d2Win);
+        var boardWin = [[],[],[],[],[],[],[],[]];
         
-        for(var i=0;i<boardWin.length/2;i++){
-            if(boardWin[i+8].length == 2){
-                return this.findingLastPiece(boardWin[i],boardWin[i+8]);
+        //we are trying to find the sections that are one piece away from the computer winning
+        for(var i=0;i<this.board.fullBoard.length;i++){
+            for(var j=0;j<3;j++){
+                if(this.board.tracker[this.board.fullBoard[i][j]] == "o") boardWin[i].push(this.board.fullBoard[i][j]);
+            }
+        }
+        //if we find a section, we find the last cell of that section
+        for(var i=0;i<boardWin.length;i++){
+            if(boardWin[i].length == 2){
+                return this.findingLastPiece(this.board.fullBoard[i],boardWin[i]);
             }
         }
     },
