@@ -200,7 +200,8 @@ GameController.prototype = {
         //if we find a section, we find the last cell of that section
         for(var i=0;i<boardWin.length;i++){
             if(boardWin[i].length == 2){
-                return this.findingLastPiece(this.board.fullBoard[i],boardWin[i]);
+                var missingPiece = this.findingLastPiece(this.board.fullBoard[i],boardWin[i]);
+                if(this.board.tracker[missingPiece[0]] == "") return missingPiece;
             }
         }
     },
@@ -235,7 +236,7 @@ GameController.prototype = {
 
     findingLastPiece: function(section,sectionWin){
         diff = section.filter(function(x) { return sectionWin.indexOf(x) < 0 })
-        if(this.board.tracker[diff[0]] == "") return diff;
+        return diff;
     },
 
     winState: function(position1,position2,position3,piece){
