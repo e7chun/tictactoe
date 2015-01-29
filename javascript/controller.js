@@ -28,8 +28,7 @@ GameController.prototype = {
     },
 
     //player makes the move. wherever the player clicks,
-    //we check all the possible rows/columns/diagonals that
-    //could lead to a three-in-a-row.
+    //we check all the possible remaining empty cells
     makeMove: function(e){                             
         var possibleAreas = [];
 
@@ -48,6 +47,8 @@ GameController.prototype = {
                     if(this.board.fullBoard[i][j] == id) possibleAreas.push(this.board.fullBoard[i]);
                 }
             }
+            //if the board is not completely full, then it's the computer's turn. 
+            //player will get the last move
             if(this.totalMoves < 9) this.computerTurn(possibleAreas);
             else{
                 this.tieGame();
@@ -58,54 +59,54 @@ GameController.prototype = {
         }
     },
 
-    //now it's the computer's turn. we first take into consideration
-    //the player's first move in order to make the smartest move for the computer.
-    //computer also checks if the player is about to get a three-in-a-row
-    computerTurn: function(winningAreas){                           
+    //computer's thought process
+    //logic comes from http://www.chessandpoker.com/tic_tac_toe_strategy.html and http://www.quora.com/Is-there-a-way-to-never-lose-at-Tic-Tac-Toe
+    computerTurn: function(emptyAreas){                           
         while(this.p1.myTurn == false){
 
             var position;
-            var possibleWin = this.winningMove();
+            var possibleWin = this.winningMove();                   //if there is a winningMove for the computer, it will make that move
 
-            //p1 first move = center
-            if(this.totalMoves == 1 && this.board.tracker[4] == "x"){
-                //computer must go for a corner
-                var choices = [0,2,6,8];
-                var randChoice = choices[Math.floor(Math.random() * choices.length)];
-                position = randChoice;
-                this.updateTracker(position);
-            }
-            //p1 first move = corner or edge
-            else if(this.totalMoves == 1 && this.board.tracker[4] != "x"){
-                //computer should go for center
-                position = 4;
-                this.updateTracker(position);
+            if(this.totalMoves == 1){
+                //if p1 first move = center, computer must go for a corner
+                if(this.board.tracker[4] == "x"){
+                    var choices = [0,2,6,8];
+                    var randChoice = choices[Math.floor(Math.random() * choices.length)];
+                    position = randChoice;
+                    this.updateTracker(position);
+                    this.totalMoves ++;
+                }
+                //p1 first move = corner or edge
+                else{
+                    position = 4;
+                    this.updateTracker(position);
+                    this.totalMoves ++;
+                }
             }
             //checks if computer can win next turn
             else if(possibleWin){
                 position = possibleWin[0];
                 this.updateTracker(position);
+                    this.totalMoves ++;
             }
-            //check if there needs to be a counter move to prevent
-            //player from getting three-in-a-row
+            //check if there needs to be a counter move to prevent player from getting three-in-a-row
             else if(this.totalMoves > 2){
 
                 var chosenPosition;
-                for(var i=0;i<winningAreas.length;i++){
+                for(var i=0;i<emptyAreas.length;i++){
                     var countX = 0;
                     var countO = 0;
 
-                    for(var j=0;j<winningAreas[i].length;j++){
-                        if(this.board.tracker[winningAreas[i][j]] == "x") countX++;
-                        else if(this.board.tracker[winningAreas[i][j]] == "o") countO++;
+                    for(var j=0;j<emptyAreas[i].length;j++){
+                        if(this.board.tracker[emptyAreas[i][j]] == "x") countX++;
+                        else if(this.board.tracker[emptyAreas[i][j]] == "o") countO++;
                         //the cell is empty
-                        else chosenPosition = winningAreas[i][j];
+                        else chosenPosition = emptyAreas[i][j];
                     }
                     //this blocks the player from getting three-in-a-row
                     if((countX == 2) && (countO == 0)){
                         position = chosenPosition;
-                        this.board.tracker[position] = "o";
-                        this.p1.myTurn = true;
+                        this.updateTracker(position);
                         break
                     }
                 }
@@ -167,8 +168,7 @@ GameController.prototype = {
                     
                     chosenPosition = randChoice;
                     position = chosenPosition;
-                    this.board.tracker[position] = "o";
-                    this.p1.myTurn = true;
+                    this.updateTracker(position);
                 }
             }
         }
@@ -185,7 +185,6 @@ GameController.prototype = {
     updateTracker: function(position){
         this.board.tracker[position] = "o";
         this.p1.myTurn = true;
-        this.totalMoves ++;
     },
 
     winningMove: function(){
