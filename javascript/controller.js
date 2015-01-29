@@ -9,7 +9,6 @@ GameController.prototype = {
 
     makeEventListenersBeforeStart: function(){         //setting eventListeners in one method
         $('.start-game').on('click',this.startGame.bind(this));
-        // $('.start-game').off('click');
         $('.reset-game').on('click',this.resetGame.bind(this));
     },
 
@@ -195,8 +194,7 @@ GameController.prototype = {
     },
 
     winningMove: function(){
-        var r1Win = [], r2Win = [], r3Win = [], c1Win = [], c2Win = [], c3Win = [], d1Win = [], d2Win = [], diff = []; 
-
+        var r1Win = [], r2Win = [], r3Win = [], c1Win = [], c2Win = [], c3Win = [], d1Win = [], d2Win = [], diff = [], boardWin = [];
         for(var i=0;i<3;i++){
             if(this.board.tracker[this.board.r1[i]] == "o") r1Win.push(this.board.r1[i]);
             if(this.board.tracker[this.board.r2[i]] == "o") r2Win.push(this.board.r2[i]);
@@ -207,126 +205,54 @@ GameController.prototype = {
             if(this.board.tracker[this.board.d1[i]] == "o") d1Win.push(this.board.d1[i]);
             if(this.board.tracker[this.board.d2[i]] == "o") d2Win.push(this.board.d2[i]);
         }
-        if(r1Win.length == 2){
-            diff = this.board.r1.filter(function(x) { return r1Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(r2Win.length == 2){
-            diff = this.board.r2.filter(function(x) { return r2Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(r3Win.length == 2){
-            diff = this.board.r3.filter(function(x) { return r3Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(c1Win.length == 2){
-            diff = this.board.c1.filter(function(x) { return c1Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(c2Win.length == 2){
-            diff = this.board.c2.filter(function(x) { return c2Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(c3Win.length == 2){
-            diff = this.board.c3.filter(function(x) { return c3Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(d1Win.length == 2){
-            diff = this.board.d1.filter(function(x) { return d1Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
-        }
-        if(d2Win.length == 2){
-            diff = this.board.d2.filter(function(x) { return d2Win.indexOf(x) < 0 })
-            if(this.board.tracker[diff[0]] == "") return diff;
+        boardWin.push(this.board.r1,this.board.r2,this.board.r3,
+                    this.board.c1,this.board.c2,this.board.c3,
+                    this.board.d1,this.board.d2,
+                    r1Win,r2Win,r3Win,c1Win,c2Win,c3Win,d1Win,d2Win);
+        
+        for(var i=0;i<boardWin.length/2;i++){
+            if(boardWin[i+8].length == 2){
+                return this.findingLastPiece(boardWin[i],boardWin[i+8]);
+            }
         }
     },
 
     anyWinner: function(){
-        var position0 = this.board.tracker[0];
-        var position1 = this.board.tracker[1];
-        var position2 = this.board.tracker[2];
-        var position3 = this.board.tracker[3];
-        var position4 = this.board.tracker[4];
-        var position5 = this.board.tracker[5];
-        var position6 = this.board.tracker[6];
-        var position7 = this.board.tracker[7];
-        var position8 = this.board.tracker[8];
-
+        //player cannot win, so we only consider computer win scenarios
         //horizontal wins
-        //player win scenarios
-        if(position0 == "x" && position1 == "x" && position2 == "x"){           
-            this.gameView.showWinState(0,1,2);
-            this.alertMessage("Player");
+        for(var i=0;i<this.board.tracker.length;i+=3){
+            if(this.board.tracker[i] == "o" && this.board.tracker[i+1] == "o" && this.board.tracker[i+2] == "o"){
+                this.winState(i,i+1,i+2,"o");
+            }
         }
-        else if(position3 == "x" && position4 == "x" && position5 == "x"){
-            this.gameView.showWinState(3,4,5);
-            this.alertMessage("Player");
-        }
-        else if(position6 == "x" && position7 == "x" && position8 == "x"){
-            this.gameView.showWinState(6,7,8);
-            this.alertMessage("Player");
-        }
-        //computer win scenarios
-        else if(position0 == "o" && position1 == "o" && position2 == "o"){           
-            this.gameView.showWinState(0,1,2);
-            this.alertMessage("Computer");
-        }
-        else if(position3 == "o" && position4 == "o" && position5 == "o"){
-            this.gameView.showWinState(3,4,5);
-            this.alertMessage("Computer");
-        }
-        else if(position6 == "o" && position7 == "o" && position8 == "o"){
-            this.gameView.showWinState(6,7,8);
-            this.alertMessage("Computer");
-        }
-
         //vertical wins
-        //player win scenarios
-        if(position0 == "x" && position3 == "x" && position6 == "x"){           
-            this.gameView.showWinState(0,3,6);
-            this.alertMessage("Player");
+        for(var i=0;i<this.board.tracker.length/3;i++){
+            if(this.board.tracker[i] == "o" && this.board.tracker[i+3] == "o" && this.board.tracker[i+6] == "o"){
+                this.winState(i,i+3,i+6,"o");
+            }
         }
-        else if(position1 == "x" && position4 == "x" && position7 == "x"){
-            this.gameView.showWinState(1,4,7);
-            this.alertMessage("Player");
+        for(var i=0;i<this.board.tracker.length/3;i++){
+            if(this.board.tracker[i] == "o" && this.board.tracker[i+3] == "o" && this.board.tracker[i+6] == "o"){
+                this.winState(i,i+3,i+6,"o");
+            }
         }
-        else if(position2 == "x" && position5 == "x" && position8 == "x"){
-            this.gameView.showWinState(2,5,8);
-            this.alertMessage("Player");
-        }
-        //computer win scenarios
-        else if(position0 == "o" && position3 == "o" && position6 == "o"){           
-            this.gameView.showWinState(0,3,6);
-            this.alertMessage("Computer");
-        }
-        else if(position1 == "o" && position4 == "o" && position7 == "o"){
-            this.gameView.showWinState(1,4,7);
-            this.alertMessage("Computer");
-        }
-        else if(position2 == "o" && position5 == "o" && position8 == "o"){
-            this.gameView.showWinState(2,5,8);
-            this.alertMessage("Computer");
-        }
-
         //diagonal wins
-        //player win scenarios
-        if(position0 == "x" && position4 == "x" && position8 == "x"){           
-            this.gameView.showWinState(0,4,8);
-            this.alertMessage("Player");
+        if(this.board.tracker[0] == "o" && this.board.tracker[4] == "o" && this.board.tracker[8] == "o"){           
+            this.winState(0,4,8,"o");            
         }
-        else if(position2 == "x" && position4 == "x" && position6 == "x"){
-            this.gameView.showWinState(2,4,6);
-            this.alertMessage("Player");
+        else if(this.board.tracker[2] == "o" && this.board.tracker[4] == "o" && this.board.tracker[6] == "o"){
+            this.winState(2,4,6,"o");            
         }
-        //computer win scenarios
-        else if(position0 == "o" && position4 == "o" && position8 == "o"){           
-            this.gameView.showWinState(0,4,8);
-            this.alertMessage("Computer");
-        }
-        else if(position2 == "o" && position4 == "o" && position6 == "o"){
-            this.gameView.showWinState(2,4,6);
-            this.alertMessage("Computer");
-        }
+    },
+
+    findingLastPiece: function(section,sectionWin){
+        diff = section.filter(function(x) { return sectionWin.indexOf(x) < 0 })
+        if(this.board.tracker[diff[0]] == "") return diff;
+    },
+
+    winState: function(position1,position2,position3,piece){
+        this.gameView.showWinState(position1,position2,position3);
+        if(piece == "o") this.alertMessage("Computer");
     },
 
     tieGame: function(){
@@ -344,6 +270,5 @@ $(document).ready(function(){
     var view = new View();
     var player = new Player();
     var game = new GameController(view,player);
-
     game.makeEventListenersBeforeStart();              
 });
