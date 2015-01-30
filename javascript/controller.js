@@ -68,13 +68,11 @@ GameController.prototype = {
                     var choices = [0,2,6,8];
                     var randChoice = choices[Math.floor(Math.random() * choices.length)];
                     position = randChoice;
-                    this.updateTrackerAndMoves(position,true,"o",true);
                 }
                 //p1 first move = corner or edge
-                else{
-                    position = 4;
-                    this.updateTrackerAndMoves(position,true,"o",true);
-                }
+                else position = 4;
+                
+                this.updateTrackerAndMoves(position,true,"o",true);
             }
             //checks if computer can win next turn
             else if(possibleWin){
@@ -155,8 +153,8 @@ GameController.prototype = {
                             }
                         }
                     }
-                    if(smartEmptySpots.length == 0) randChoice = remainingSpots[Math.floor(Math.random() * remainingSpots.length)];
-                    else randChoice = smartEmptySpots[Math.floor(Math.random() * smartEmptySpots.length)];
+                    if(smartEmptySpots.length == 0) randChoice = remainingSpots[Math.floor(Math.random()*remainingSpots.length)];
+                    else randChoice = smartEmptySpots[Math.floor(Math.random()*smartEmptySpots.length)];
                     
                     chosenPosition = randChoice;
                     position = chosenPosition;
