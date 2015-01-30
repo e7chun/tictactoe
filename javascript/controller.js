@@ -81,10 +81,10 @@ GameController.prototype = {
                 position = possibleWin[0];
                 this.updateTrackerAndMoves(position,true,"o",true);
             }
-            //check if there needs to be a counter move to prevent player from getting three-in-a-row
             else if(this.totalMoves > 2){
-
                 var chosenPosition;
+
+                //check if there needs to be a counter move to prevent player from getting three-in-a-row
                 for(var i=0;i<emptyAreas.length;i++){
                     var countX = 0;
                     var countO = 0;
@@ -101,6 +101,7 @@ GameController.prototype = {
                         break
                     }
                 }
+                //if we're not blocking a three-in-a-row, computer has to strategically place its pieces
                 if(this.p1.myTurn == false){
                     var remainingSpots = [];
                     var smartEmptySpots = [];                       //smartEmptySpots are the empty spots that the computer should consider
@@ -108,10 +109,10 @@ GameController.prototype = {
                     for(var i=0;i<this.board.tracker.length;i++){
                         if(this.board.tracker[i] == "") remainingSpots.push(i);
                     }
-                    //certain precautions need to be taken in this step. assuming the player is smart,
-                    //the computer's second move (totalMoves=4) is absolutely vital
-                    if(this.totalMoves == 4){
-                        //if the player's first move was the center, computer's second move must be a corner
+                    //certain precautions need to be taken in on the computer's second move, when totalMoves = 4
+                    if(this.totalMoves == 4){   
+                        //if the player's first move was the center, then computer's first move would be a corner
+                        //if the player's trying to win, then his second move would be a corner. computer's second move must be a corner
                         if(this.board.tracker[4] == "x"){
                             for(var i=0;i<remainingSpots.length;i++){
                                 if(remainingSpots[i]==0 || remainingSpots[i]==2 || remainingSpots[i]==6 || remainingSpots[i]==8){
@@ -119,8 +120,8 @@ GameController.prototype = {
                                 }
                             }
                         }
-                        //if the player's first move was the edge, computer's second move must be a particular corner,
-                        //depending on the player's second move
+                        //if the player's first move was the edge, then computer's first move would be a center.
+                        //player's second move can be an edge or corner. depending on which, computer's second move must be a particular corner
                         else if(this.board.tracker[1] == "x" || this.board.tracker[3] == "x" || this.board.tracker[5] == "x" || this.board.tracker[7] == "x"){
                             for(var i=0;i<remainingSpots.length;i++){
                                 if(remainingSpots[i]==0 || remainingSpots[i]==2 || remainingSpots[i]==6 || remainingSpots[i]==8){
@@ -144,7 +145,8 @@ GameController.prototype = {
                                 else if(this.board.tracker[2] == "x") smartEmptySpots = [6];
                             }
                         }
-                        //if the player's first move was the corner, computer's second move must be an edge
+                        //if the player's first move was the corner, computer would take the center.
+                        //if the player's trying to not lose, his second move would be the corner diagonal to his first move. computer's second move must be an edge
                         else if(this.board.tracker[0] == "x" || this.board.tracker[2] == "x" || this.board.tracker[6] == "x" || this.board.tracker[8] == "x"){
                             for(var i=0;i<remainingSpots.length;i++){
                                 if(remainingSpots[i]==1 || remainingSpots[i]==3 || remainingSpots[i]==5 || remainingSpots[i]==7){
@@ -237,7 +239,6 @@ GameController.prototype = {
     }
 }
 
-//establishing the game
 $(document).ready(function(){               
     var view = new View();
     var player = new Player();
