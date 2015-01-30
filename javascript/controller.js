@@ -35,12 +35,8 @@ GameController.prototype = {
         if(this.p1.myTurn){
             var id = e.target.className.substr(-1);
             this.gameView.showPlayerPiece(id);
-            this.board.tracker[id] = "x";
-            this.p1.myTurn = false;
-            this.totalMoves ++;
-
-            //check if player won
-            this.anyWinner();
+            this.updateTrackerAndMoves(id,false,"x",true);
+            this.anyWinner();                           //checks if any player won
 
             for(var i=0;i<this.board.fullBoard.length;i++){
                 for(var j=0;j<3;j++){
@@ -54,8 +50,7 @@ GameController.prototype = {
                 this.tieGame();
                 this.resetGame();
             }
-        //make sure you can't click on that cell
-        $('.'+id).off('click');
+        $('.'+id).off('click');                 //makes sure you can't click on that cell
         }
     },
 
@@ -73,21 +68,18 @@ GameController.prototype = {
                     var choices = [0,2,6,8];
                     var randChoice = choices[Math.floor(Math.random() * choices.length)];
                     position = randChoice;
-                    this.updateTracker(position);
-                    this.totalMoves ++;
+                    this.updateTrackerAndMoves(position,true,"o",true);
                 }
                 //p1 first move = corner or edge
                 else{
                     position = 4;
-                    this.updateTracker(position);
-                    this.totalMoves ++;
+                    this.updateTrackerAndMoves(position,true,"o",true);
                 }
             }
             //checks if computer can win next turn
             else if(possibleWin){
                 position = possibleWin[0];
-                this.updateTracker(position);
-                    this.totalMoves ++;
+                this.updateTrackerAndMoves(position,true,"o",true);
             }
             //check if there needs to be a counter move to prevent player from getting three-in-a-row
             else if(this.totalMoves > 2){
@@ -100,19 +92,18 @@ GameController.prototype = {
                     for(var j=0;j<emptyAreas[i].length;j++){
                         if(this.board.tracker[emptyAreas[i][j]] == "x") countX++;
                         else if(this.board.tracker[emptyAreas[i][j]] == "o") countO++;
-                        //the cell is empty
-                        else chosenPosition = emptyAreas[i][j];
+                        else chosenPosition = emptyAreas[i][j];                 //cell is empty
                     }
                     //this blocks the player from getting three-in-a-row
                     if((countX == 2) && (countO == 0)){
                         position = chosenPosition;
-                        this.updateTracker(position);
+                        this.updateTrackerAndMoves(position,true,"o",false);
                         break
                     }
                 }
                 if(this.p1.myTurn == false){
                     var remainingSpots = [];
-                    var smartEmptySpots = [];
+                    var smartEmptySpots = [];                       //smartEmptySpots are the empty spots that the computer should consider
                     var randChoice;
                     for(var i=0;i<this.board.tracker.length;i++){
                         if(this.board.tracker[i] == "") remainingSpots.push(i);
@@ -162,29 +153,27 @@ GameController.prototype = {
                             }
                         }
                     }
-
                     if(smartEmptySpots.length == 0) randChoice = remainingSpots[Math.floor(Math.random() * remainingSpots.length)];
                     else randChoice = smartEmptySpots[Math.floor(Math.random() * smartEmptySpots.length)];
                     
                     chosenPosition = randChoice;
                     position = chosenPosition;
-                    this.updateTracker(position);
+                    this.updateTrackerAndMoves(position,true,"o",false);
                 }
             }
         }
         if(this.p1.myTurn && this.board.tracker[position] == "o"){
             this.totalMoves ++;
             this.gameView.showComputerPiece(position);
-            //make sure player can't steal computer's spot
-            $('.'+position).off('click');
-            //check if computer won
-            this.anyWinner();
+            $('.'+position).off('click');              //make sure player can't steal computer's spot     
+            this.anyWinner();                           //check if computer won
         }
     },
 
-    updateTracker: function(position){
-        this.board.tracker[position] = "o";
-        this.p1.myTurn = true;
+    updateTrackerAndMoves: function(position,turn,piece,move){
+        this.board.tracker[position] = piece;
+        this.p1.myTurn = turn;
+        if(move) this.totalMoves ++;
     },
 
     winningMove: function(){
@@ -214,11 +203,6 @@ GameController.prototype = {
             }
         }
         //vertical wins
-        for(var i=0;i<this.board.tracker.length/3;i++){
-            if(this.board.tracker[i] == "o" && this.board.tracker[i+3] == "o" && this.board.tracker[i+6] == "o"){
-                this.winState(i,i+3,i+6,"o");
-            }
-        }
         for(var i=0;i<this.board.tracker.length/3;i++){
             if(this.board.tracker[i] == "o" && this.board.tracker[i+3] == "o" && this.board.tracker[i+6] == "o"){
                 this.winState(i,i+3,i+6,"o");
