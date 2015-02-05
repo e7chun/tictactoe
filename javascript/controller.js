@@ -41,14 +41,12 @@ GameController.prototype = {
             this.tieGame();
             this.resetGame();
         }
-        $('.'+id).off('click');                 //makes sure you can't click on that cell
+        $('.'+id).off('click');           //makes sure you can't click on that cell
     },
 
-    //computer's thought process
-    //logic comes from http://www.chessandpoker.com/tic_tac_toe_strategy.html and http://www.quora.com/Is-there-a-way-to-never-lose-at-Tic-Tac-Toe
     computerTurn: function(emptyAreas){                           
         var position;
-        var possibleWin = this.winningMove();                   //if there is a winningMove for the computer, it will make that move
+        var possibleWin = this.winningMove();          //if there is a winningMove for the computer, it will make that move
 
         if(this.totalMoves == 1) position = this.firstMove();
         //checks if computer can win next turn
@@ -66,7 +64,6 @@ GameController.prototype = {
             else{
                 var randChoice, smartEmptySpots;
                 var remainingSpots = this.findAllEmptySpots();
-                
                 //certain precautions need to be taken in on the computer's second move, when totalMoves = 4
                 if(this.totalMoves == 4) smartEmptySpots = this.precautionMoves(remainingSpots);
 
@@ -127,6 +124,7 @@ GameController.prototype = {
         return remainingSpots;
     },
 
+    //logic comes from http://www.chessandpoker.com/tic_tac_toe_strategy.html and http://www.quora.com/Is-there-a-way-to-never-lose-at-Tic-Tac-Toe
     precautionMoves: function(leftOverSpots){
         var smartRemainingSpots = [];        //smartRemainingSpots are the empty spots that the computer should consider
         //if the player's first move was the center, then computer's first move would be a corner
